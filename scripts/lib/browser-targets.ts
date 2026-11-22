@@ -27,6 +27,10 @@ export interface TargetEntry {
   proxy?: string | null
   device?: DeviceTarget | null
   account?: string
+  /** agent-browser auth-vault profile used by save-auth / autologin. */
+  authRef?: string | null
+  /** Canonical post-login landing URL (login probes start here). */
+  homeUrl?: string | null
 }
 
 export interface Registry {
@@ -40,6 +44,8 @@ export interface ResolvedTarget {
   profile: string
   proxy?: string
   device: DeviceTarget
+  authRef?: string
+  homeUrl?: string
 }
 
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
@@ -118,6 +124,10 @@ function resolveEntry(
   const resolved: ResolvedTarget = { platform, cdpPort: entry.cdpPort, profile, device }
   const proxy = entry.proxy?.trim()
   if (proxy) resolved.proxy = proxy
+  const authRef = entry.authRef?.trim()
+  if (authRef) resolved.authRef = authRef
+  const homeUrl = entry.homeUrl?.trim()
+  if (homeUrl) resolved.homeUrl = homeUrl
   return resolved
 }
 

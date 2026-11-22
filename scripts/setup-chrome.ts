@@ -75,8 +75,8 @@ console.error(`   launching: ${selected.map(t => `${t.platform}@${t.cdpPort}`).j
 // executors target others with --cdp). Done first so the pin is in place even if
 // a launch below fails.
 const pinPort = (targets[DEFAULT_PLATFORM] ?? selected[0]!).cdpPort
-const pinPath = syncAgentBrowserConfig(PROJECT_ROOT, pinPort)
-console.error(`   agent-browser pinned to default CDP ${pinPort} via ${pinPath}`)
+const pinPaths = syncAgentBrowserConfig(PROJECT_ROOT, pinPort)
+console.error(`   agent-browser pinned to default CDP ${pinPort} via ${pinPaths.join(', ')}`)
 
 /** Drop a stale agent-browser daemon so the next command honours the pin. */
 function clearStaleDaemon(): void {

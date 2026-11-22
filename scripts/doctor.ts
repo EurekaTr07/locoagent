@@ -135,6 +135,24 @@ if (process.argv.includes('--check-cdp')) {
   }
 }
 
+// Optional login-state check — raw-CDP probe of each registered platform that
+// has a probe definition. Verifies the SESSION (cookies), not just the socket.
+if (process.argv.includes('--check-logins')) {
+  const [{ probeLogin, PLATFORM_PROBES, renderVerdict }] = await Promise.all([
+    import('./lib/login-probe'),
+  ])
+  try {
+    const targets = loadTargets()
+    for (const t of Object.values(targets)) {
+      if (!PLATFORM_PROBES[t.platform]) continue
+      const v = await probeLogin(t.platform, t.cdpPort, { timeoutMs: 25000 })
+      add(`Login ${t.platform}`, v.state === 'yes', false, renderVerdict(v))
+    }
+  } catch (e) {
+    add('Login probe', false, false, `error: ${(e as Error).message}`)
+  }
+}
+
 // Report
 let failed = false
 for (const c of checks) {

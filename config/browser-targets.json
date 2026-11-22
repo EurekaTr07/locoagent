@@ -5,7 +5,15 @@
       "cdpPort": 9222,
       "useLegacyProfile": true,
       "proxy": "http://127.0.0.1:6738",
-      "account": "mashijiann"
+      "account": "mashijiann",
+      "authRef": "x-main",
+      "homeUrl": "https://x.com/home"
+    },
+    "instagram": {
+      "cdpPort": 9226,
+      "proxy": null,
+      "authRef": "ig-personal",
+      "homeUrl": "https://www.instagram.com/"
     },
     "linkedin": {
       "cdpPort": 9223,
