@@ -221,7 +221,10 @@ const READY_EXPR = `JSON.stringify({u:location.href,t:document.readyState})`
 export async function probeLogin(
   platform: string,
   cdpPort: number,
-  opts: { timeoutMs?: number; pollMs?: number } = {},
+export async function probeLogin(
+  platform: string,
+  cdpPort: number,
+  opts: { timeoutMs?: number; pollMs?: number; residentOnly?: boolean } = {},
 ): Promise<LoginVerdict> {
   const spec = PLATFORM_COOKIE_MARKERS[platform]
   if (!spec) return { platform, cdpPort, state: 'unknown', detail: 'no probe defined' }
@@ -252,7 +255,10 @@ export async function probeLogin(
         }
 
         // Scratch-tab census: navigate home, wait for settle, re-census.
-        if (!scratch) {
+        // Skipped in residentOnly mode — that mode NEVER loads pages, it only
+        // passively reads cookies through a tab the human already had open
+        // (anti-bot courtesy: no automation-generated page hits).
+        if (!scratch && !opts.residentOnly) {
           scratch = await openScratchTab(cdpPort, spec.homeUrl)
           if (!scratch) lastNote = '/json/new refused'
         }

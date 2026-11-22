@@ -67,7 +67,14 @@ for (const name of wanted) {
     continue
   }
   await runEnsure(name)
-  let v = await probeLogin(name, t.cdpPort, { timeoutMs: timeoutSec * 1000 })
+  // Instagram gets the GENTLE probe by default: passive cookie-read through
+  // any tab the human already has open, never an automation-generated page
+  // load (Instagram rate-flags repeated machine page hits with captchas).
+  const gentle = ['instagram']
+  let v = await probeLogin(name, t.cdpPort, {
+    timeoutMs: timeoutSec * 1000,
+    residentOnly: gentle.includes(name),
+  })
 
   if (v.state !== 'yes' && autologin && t.authRef) {
     const ok = await runAutologin(t.authRef, t.cdpPort)
